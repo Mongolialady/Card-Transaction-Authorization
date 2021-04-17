@@ -24,9 +24,9 @@ public class MessageProcessor {
             }
         }
 
-        int bm = Integer.parseInt(msg.getBitMap().substring(0, 1), 16);
-        bm += 1;
-        msg.setBitMap(Integer.toHexString(bm) + msg.getBitMap().substring(1));
+        int bm = Integer.parseInt(msg.getBitMap(), 16);
+        bm += 16;
+        msg.setBitMap(Integer.toHexString(bm));
 
         msg.setMsgTypeInd("0110");
 

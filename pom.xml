@@ -51,6 +51,19 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
+            <configuration>
+                <archive>
+                    <index>true</index>
+                    <manifest>
+                      <mainClass>com.hhy.cardtransactionprocessing.App</mainClass>
+                    </manifest>
+                    <manifestEntries>
+                        <mode>development</mode>
+                        <url>${project.url}</url>
+                        <key>value</key>
+                    </manifestEntries>
+                </archive>
+            </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>

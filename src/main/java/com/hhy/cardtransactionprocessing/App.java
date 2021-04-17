@@ -21,7 +21,7 @@ public class App {
 
     private void readFile(String fileName) throws IOException{
         BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/resource/output.txt"));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("./output.txt"));
         String s = bufferedReader.readLine();
         while(s != null) {
             MessageProcessor msgprocessor = new MessageProcessor();
