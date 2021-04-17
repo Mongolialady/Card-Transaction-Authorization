@@ -2,7 +2,7 @@ package modules;
 
 public class TxnMessage {
     private String msgTypeInd;
-    private String bitMap;
+    private int bitMap;
     private String panNum;
     private String expirationDate;
     private String txnAmount;
@@ -18,11 +18,11 @@ public class TxnMessage {
         this.msgTypeInd = msgTypeInd;
     }
 
-    public String getBitMap() {
+    public int getBitMap() {
         return bitMap;
     }
 
-    public void setBitMap(String bitMap) {
+    public void setBitMap(int bitMap) {
         this.bitMap = bitMap;
     }
 
@@ -81,8 +81,8 @@ public class TxnMessage {
             sb.append(this.msgTypeInd);
         }
 
-        if(this.bitMap != null){
-            sb.append(this.bitMap);
+        if(this.bitMap != 0){
+            sb.append(Integer.toHexString(this.bitMap));
         }
 
         if(this.panNum != null){

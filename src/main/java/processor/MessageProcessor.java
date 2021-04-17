@@ -8,9 +8,12 @@ import java.time.format.DateTimeFormatter;
 public class MessageProcessor {
 
     public String processMessage(String message) {
+        if(message == null && message.length() <= 6){
+            return "";
+        }
+
         TxnMessage msg = parser(message);
-        if (msg.getMsgTypeInd() == null || msg.getBitMap() == null || msg.getPanNum() == null
-                || msg.getExpirationDate() == null || msg.getTxnAmount() == null) {
+        if (msg.getPanNum() == null || msg.getExpirationDate() == null || msg.getTxnAmount() == null) {
             msg.setResponseCode("ER");
         } else {
 
@@ -24,9 +27,7 @@ public class MessageProcessor {
             }
         }
 
-        int bm = Integer.parseInt(msg.getBitMap(), 16);
-        bm += 16;
-        msg.setBitMap(Integer.toHexString(bm));
+        msg.setBitMap(msg.getBitMap() + 16);
 
         msg.setMsgTypeInd("0110");
 
@@ -51,44 +52,43 @@ public class MessageProcessor {
         TxnMessage msg = new TxnMessage();
         int j = 0;
         // message type indicator
-        if (j < message.length() && (j + 4) < message.length()) {
-            msg.setMsgTypeInd(message.substring(j, j += 4));
-        }
+        msg.setMsgTypeInd(message.substring(j, j += 4));
 
         // bitMap
-        if (j < message.length() && (j + 2) < message.length()) {
-            msg.setBitMap(message.substring(j, j += 2));
+        int bitmap = Integer.parseInt(message.substring(j, j += 2), 16);
+        msg.setBitMap(bitmap);
+        String bm = Integer.toBinaryString(bitmap);
+        while(bm.length() < 8){
+            bm = "0" + bm;
         }
 
+        int i = 0;
         // pan number
-        if (j < message.length() && (j + 2) < message.length()) {
+        if (bm.charAt(i++) == '1' && j < message.length()) {
             String x = message.substring(j, j + 2);
             int y = Character.getNumericValue(x.charAt(0)) * 10 + Character.getNumericValue(x.charAt(1));
-            if((j + y + 2) < message.length()) {
-                msg.setPanNum(message.substring(j, j += y + 2));
-            }
+            msg.setPanNum(message.substring(j, j += y + 2));
         }
 
         // expiration date
-        if (j < message.length() && (j + 4) < message.length()) {
+        if (bm.charAt(i++) == '1' && j < message.length()) {
             msg.setExpirationDate(message.substring(j, j += 4));
         }
 
         // transaction amount
         String ss = message.substring(j, j + 10);
-        if (j < message.length() && (j + 10) <= message.length()) {
+        if (bm.charAt(i++) == '1' && j < message.length()) {
             msg.setTxnAmount(message.substring(j, j += 10));
         }
 
-        if (j < message.length() && (j + 2) < message.length()) {
+        i++;
+        if (bm.charAt(i++) == '1' && j < message.length()) {
             String x = message.substring(j, j + 2);
             int y = Character.getNumericValue(x.charAt(0)) * 10 + Character.getNumericValue(x.charAt(1));
-            if((j + y + 2) < message.length()) {
-                msg.setCardholderName(message.substring(j, j += y + 2));
-            }
+            msg.setCardholderName(message.substring(j, j += y + 2));
         }
 
-        if (j < message.length() && (j + 5) == message.length()) {
+        if (bm.charAt(i++) == '1' && j < message.length()) {
             msg.setZipCode(message.substring(j));
         }
 
